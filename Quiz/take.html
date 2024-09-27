@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="customStyle.css">
+  <title>Take Quiz</title>
+</head>
+<body>
+  <!--Header Section Start-->
+  <div class="h-20 bg-black w-full flex justify-between pl-20 pr-14  items-center">
+    <div>
+      <a href="index.html"><button class="font-extrabold text-4xl text-red-600 hover:text-yellow-500"><h1>Quiz Maker</h1></button></a>
+    </div>
+  </div>
+  <!--Header Section End-->
+
+   <!--Main Section Start-->
+   <div style="background-image: url(image/background.jpg);" class="h-auto w-full bg-cover bg-no-repeat flex justify-center items-center">
+    <div class="bg-white mt-10 mb-10 p-5 w-1/2 rounded-2xl text-wrap items-center flex flex-col">
+      <h2 id="quizTitle" class="font-bold text-4xl text-center">Quiz Title</h2>
+      <div class="h-1 w-36 border-2 border-yellow-500 rounded-full mb-12 hidden lg:block"></div>
+      <div id="questionsContainer" class="font-bold text-4xl"></div>
+      <button onclick="nextQuestion()" class="h-10 w-24 bg-green-600 rounded-2xl hover:bg-green-400 ">Next</button>
+  </div>
+  </div>
+  <!--Main Section End-->
+
+
+  <!--Javascript-->
+  <script>
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    const quizIndex = new URLSearchParams(window.location.search).get('quiz');
+    const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+    const quiz = quizzes[quizIndex];
+
+    // Variable to track selected option
+    let selectedOption = null;
+
+    // Load the question and options
+    function loadQuestion() {
+        const questionData = quiz.questions[currentQuestionIndex];
+        const questionContainer = document.getElementById('questionsContainer');
+        selectedOption = null;  // Reset the selected option for the new question
+
+        // Render the question and options
+        questionContainer.innerHTML = `
+            <p>${questionData.question}</p>
+            ${questionData.options.map((option, index) => `
+                <div class="option" onclick="selectOption(${index}, this)">${option}</div>
+            `).join('')}
+        `;
+        document.getElementById('quizTitle').textContent = quiz.title;
+    }
+
+    // Select and highlight an option
+    function selectOption(optionIndex, element) {
+        selectedOption = optionIndex;  // Track which option is selected
+
+        // Remove 'selected' class from all options and apply to the clicked one
+        const allOptions = document.querySelectorAll('.option');
+        allOptions.forEach(option => option.classList.remove('selected'));
+        element.classList.add('selected');
+    }
+
+    // Handle moving to the next question
+    function nextQuestion() {
+        if (selectedOption !== null) {
+            userAnswers[currentQuestionIndex] = selectedOption;  // Save user's answer
+
+            if (currentQuestionIndex < quiz.questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();  // Load the next question
+            } else {
+                calculateScore();  // All questions answered, calculate score
+            }
+        } else {
+            alert('Please select an answer before proceeding.');
+        }
+    }
+
+    // Calculate the score
+    function calculateScore() {
+        let userScore = 0;
+        quiz.questions.forEach((question, index) => {
+            if (userAnswers[index] === question.correctOption) {
+                userScore += 1;  // Increment score for correct answers
+            }
+        });
+
+        // Redirect to result page and pass the score
+        location.href = `result.html?quiz=${quizIndex}&score=${userScore}`;
+    }
+
+    // Initialize quiz on page load
+    document.addEventListener('DOMContentLoaded', loadQuestion);
+</script>
+</body>
+</html>

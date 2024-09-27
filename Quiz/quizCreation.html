@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="customStyle.css">
+  <title>Quiz Creation</title>
+</head>
+<body>
+  <!--Header Section Start-->
+  <div class=" h-20 bg-black w-full flex justify-between pl-20 pr-14  items-center ">
+    <div>
+      <a href="index.html"><button class="font-extrabold text-4xl text-red-600 hover:text-yellow-500"><h1>Quiz Maker</h1></button></a>
+    </div>
+  </div>
+  <!--Header Section End-->
+
+  <!--Main Section Start-->
+  <div style="background-image: url(image/background.jpg);" class="h-auto w-full bg-cover bg-no-repeat flex justify-center items-center pb-10">
+    <div class="bg-white w-1/2 ml-16 mr-12 pt-10 pb-10 pr-4 mt-16 rounded-2xl h-auto flex items-center justify-center flex-col">
+      <h2 class="font-bold text-3xl ">Create a New Quiz</h2>
+      <div class="h-1 w-64 border-2 border-yellow-500  rounded-full mb-12 hidden md:block"></div>
+        <div id="quizForm">
+            <div class="form-group">
+                <label for="quizTitle" class="text-xl font-bold ml-4 mt-2">Quiz Title:</label>
+                <input type="text" id="quizTitle" placeholder="Enter quiz title" class="ml-2 w-full h-10 text-xl border-2 rounded-xl pl-2 mb-4">
+            </div>
+            <div id="questionsContainer"></div>
+            <button onclick="addQuestion()" class="bg-blue-700 h-10 w-40 rounded-xl hover:bg-blue-500 font-bold  mt-2">Add Question</button>
+            <button onclick="saveQuiz()" class="bg-blue-700 h-10 w-40 rounded-xl hover:bg-blue-500 font-bold  mt-2">Save Quiz</button>
+        </div>
+    </div>
+  </div>
+  <!--Main Section End-->
+
+
+  <!--Javascript-->
+  <script>
+    let questions = [];
+
+// Add a new question block
+function addQuestion() {
+    const questionIndex = questions.length;
+    const questionBlock = document.createElement('div');
+    questionBlock.classList.add('question-block');
+
+    questionBlock.innerHTML = `
+        <div class="form-group">
+            <label for="question${questionIndex}" class="Question">Question:</label>
+            <input type="text" id="question${questionIndex}" placeholder="Enter question" class="question">
+        </div>
+        <div class="form-group">
+            <label class="Question">Options:</label>
+            <input type="text" id="option${questionIndex}_0" placeholder="Option 1" class="option1">
+            <input type="radio" name="correct${questionIndex}" value="0" class="correct-option"> Correct<br>
+            <input type="text" id="option${questionIndex}_1" placeholder="Option 2" class="option1">
+            <input type="radio" name="correct${questionIndex}" value="1" class="correct-option"> Correct<br>
+            <input type="text" id="option${questionIndex}_2" placeholder="Option 3" class="option1">
+            <input type="radio" name="correct${questionIndex}" value="2" class="correct-option"> Correct<br>
+            <input type="text" id="option${questionIndex}_3" placeholder="Option 4" class="option1">
+            <input type="radio" name="correct${questionIndex}" value="3" class="correct-option"> Correct<br>
+        </div>
+        <button class="remove-button" onclick="removeQuestion(this)">Remove Question</button>
+    `;
+    document.getElementById('questionsContainer').appendChild(questionBlock);
+
+    questions.push({ question: '', options: [], correctOption: null });
+}
+
+// Remove a question block
+function removeQuestion(element) {
+    const questionBlock = element.parentElement;
+    const index = Array.from(document.getElementsByClassName('question-block')).indexOf(questionBlock);
+    questions.splice(index, 1); // Remove question from array
+    questionBlock.remove(); // Remove from DOM
+}
+
+// Save the quiz
+function saveQuiz() {
+    const quizTitle = document.getElementById('quizTitle').value;
+
+    // Loop through each question block and store the question details
+    questions.forEach((question, index) => {
+        question.question = document.getElementById(`question${index}`).value;
+        question.options = [
+            document.getElementById(`option${index}_0`).value,
+            document.getElementById(`option${index}_1`).value,
+            document.getElementById(`option${index}_2`).value,
+            document.getElementById(`option${index}_3`).value
+        ];
+
+        // Get the selected correct option
+        const correctOption = document.querySelector(`input[name="correct${index}"]:checked`);
+        if (correctOption) {
+            question.correctOption = parseInt(correctOption.value);
+        } else {
+            question.correctOption = null; // No correct option selected
+        }
+    });
+
+    // Validate quiz details
+    if (quizTitle === '' || questions.some(q => q.correctOption === null)) {
+        alert('Please fill out all questions and select the correct answer for each.');
+        return;
+    }
+
+    // Store the quiz in localStorage
+    const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+    quizzes.push({ title: quizTitle, questions });
+    localStorage.setItem('quizzes', JSON.stringify(quizzes));
+
+    alert('Quiz saved successfully!');
+    location.href = 'list.html'; // Redirect to quiz list
+}
+</script>
+</body>
+</html>

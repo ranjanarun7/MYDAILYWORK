@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="customStyle.css">
+  <title>Result</title>
+</head>
+<body>
+  <!--Header Section Start-->
+  <div class="h-20 bg-black w-full flex justify-between pl-20 pr-14  items-center">
+    <div>
+      <a href="index.html"><button class="font-extrabold text-4xl text-red-600 hover:text-yellow-500"><h1>Quiz Maker</h1></button></a>
+    </div>
+  </div>
+  <!--Header Section End-->
+
+  <!--Main Section Start-->
+  <div style="background-image: url(image/background.jpg);" class="h-screen w-full bg-cover bg-no-repeat flex justify-center items-center">
+    <div class="container">
+      <h2 class="font-bold text-2xl">Quiz Results</h2>
+      <div id="score" class="text-black text-2xl font-bold"></div>
+  </div>
+  </div>
+  <!--Main Section End-->
+
+  <!--JavaScript-->
+  <script>
+    // Retrieve the score from the URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const score = urlParams.get('score');
+    const quizIndex = urlParams.get('quiz');
+
+    // Ensure the score is displayed correctly
+    const scoreDisplay = document.getElementById('score');
+    if (score !== null) {
+        // Fetch the quizzes to determine the total number of questions
+        const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+        const quiz = quizzes[quizIndex];
+        const totalQuestions = quiz.questions.length;
+        
+        scoreDisplay.innerText = `You scored ${score} out of ${totalQuestions}!`;
+    } else {
+        scoreDisplay.innerText = `Score not available.`;
+    }
+</script>
+</body>
+</html>

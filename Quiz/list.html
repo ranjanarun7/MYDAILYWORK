@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="customStyle.css">
+  <title>List of Quizzes</title>
+</head>
+<body>
+  <!-- Header Section Start -->
+  <div class="header">
+    <a href="index.html"><h1>Quiz Maker</h1></a>
+  </div>
+  <!-- Header Section End -->
+
+  <!-- Main Section Start -->
+  <div class="main">
+    <div class="quiz-container">
+      <h2>Select a Quiz</h2>
+      <div class="divider"></div>
+      <ul id="quizList"></ul>
+    </div>
+  </div>
+  <!-- Main Section End -->
+
+  <!-- JavaScript -->
+  <script>
+    const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+
+    function loadQuizList() {
+        const quizListContainer = document.getElementById('quizList');
+        quizListContainer.innerHTML = ''; // Clear previous content
+
+        if (quizzes.length === 0) {
+            quizListContainer.innerHTML = '<p>No quizzes available.</p>';
+            return;
+        }
+
+        quizzes.forEach((quiz, index) => {
+            const quizItem = document.createElement('li');
+            quizItem.className = 'quiz-item';
+
+            quizItem.innerHTML = `
+                <span class="quiz-title">${quiz.title}</span>
+                <div class="quiz-actions">
+                    <button class="play-button" onclick="playQuiz(${index})">Play Quiz</button>
+                    <button class="delete-button" onclick="deleteQuiz(${index})">Delete Quiz</button>
+                </div>
+            `;
+
+            quizListContainer.appendChild(quizItem);
+        });
+    }
+
+    function playQuiz(index) {
+        // Redirect to take.html with the selected quiz index
+        location.href = `take.html?quiz=${index}`;
+    }
+
+    function deleteQuiz(index) {
+        if (confirm('Are you sure you want to delete this quiz?')) {
+            // Remove the quiz from the array
+            quizzes.splice(index, 1);
+            // Update localStorage
+            localStorage.setItem('quizzes', JSON.stringify(quizzes));
+            // Reload the quiz list
+            loadQuizList();
+        }
+    }
+
+    // Load the quiz list on page load
+    document.addEventListener('DOMContentLoaded', loadQuizList);
+  </script>
+</body>
+</html>

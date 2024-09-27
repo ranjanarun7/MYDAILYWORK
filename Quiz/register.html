@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="customStyle.css">
+  <title>Register</title>
+</head>
+<body>
+    <!--Header Section Start-->
+    <div class="h-20 bg-black w-full flex justify-between pl-20 pr-14  items-center">
+      <div>
+        <a href="index.html"><button class="font-extrabold text-4xl text-red-600 hover:text-yellow-500"><h1>Quiz Maker</h1></button></a>
+      </div>
+      <div>
+        <a href="login.html"><button id="welcomeUser" class="font-bold text-red-600 h-10 w-32 border-2 rounded-full border-white hover:text-yellow-500">login/Signup</button></a>
+      </div>
+    </div>
+    <!--Header Section End-->
+
+     <!--Main Section Start-->
+  <div style="background-image: url(image/background.jpg);" class="h-screen w-full bg-cover bg-no-repeat flex justify-center items-center">
+    <div class="container">
+      <h1 class="font-bold text-4xl text-center">Register</h1>
+      <div class="h-1 w-32 border-2 border-yellow-500 ml-28 rounded-full mb-12"></div>
+      <input type="text" id="username" placeholder="Username" class="w-full h-10 border-2 border-l-indigo-200 rounded-lg p-[10px] mb-4"><br>
+      <input type="password" id="password" placeholder="Password" class="w-full h-10 border-2 border-l-indigo-200 rounded-lg p-[10px] mb-2"><br>
+      <button onclick="register()" class="button ml-28 mt-5">Register</button>
+      <div id="message"></div>
+  </div>
+  </div>
+  <!--Main Section End-->
+
+ <!-- Javascript Section-->
+ <script>
+  function register() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const messageDiv = document.getElementById('message');
+
+      if (localStorage.getItem(username)) {
+          messageDiv.innerText = 'Username already exists.';
+          messageDiv.style.color = 'red';
+      } else {
+          localStorage.setItem(username, JSON.stringify({ username, password }));
+          messageDiv.innerText = 'Registration successful!';
+          messageDiv.style.color = 'green';
+          localStorage.setItem('currentUser', username);
+          setTimeout(() => {
+              location.href = 'index.html';
+          }, 1000);
+      }
+  }
+</script>
+</body>
+</html>

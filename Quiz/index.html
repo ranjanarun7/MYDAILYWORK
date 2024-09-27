@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="customStyle.css">
+  <title>Online Quiz Maker</title>
+</head>
+<body>
+  <!--Header Section Start-->
+  <div class="h-20 bg-black w-full flex justify-between pl-20 pr-14  items-center">
+    <div>
+      <a href="index.html"><button class="font-extrabold text-4xl text-red-600 hover:text-yellow-500"><h1>Quiz Maker</h1></button></a>
+    </div>
+    <div>
+      <a href="login.html"><button id="welcomeUser" class="font-bold text-red-600 h-10 w-32 border-2 rounded-full border-white hover:text-yellow-500">login/Signup</button></a>
+    </div>
+  </div>
+  <!--Header Section End-->
+
+  <!--Main Section Start-->
+  <div style="background-image: url(image/background.jpg);" class="h-screen w-full bg-cover bg-no-repeat">
+    <div class="pt-10 flex flex-col justify-center items-center  text-white h-auto w-auto">
+      <h1 id="welcomeMessage" class="text-5xl pb-10 font-extrabold"></h1>
+      <div id="authActions"></div>
+  </div>
+  </div>
+
+  <!--Javascript Start-->
+  <script>
+    const currentUser = localStorage.getItem('currentUser');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const welcomeUser = document.getElementById('welcomeUser');
+    const authActions = document.getElementById('authActions');
+
+    if (currentUser) {
+      welcomeUser.innerText = `${currentUser}`;
+      welcomeMessage.innerText = `Welcome, ${currentUser}!`;
+      authActions.innerHTML = `
+        <button onclick="location.href='quizCreation.html'" class="button">Create a Quiz</button>
+        <button onclick="location.href='list.html'" class="button">Take a Quiz</button>
+        <button onclick="logout()" class="button">Logout</button>
+      `;
+    }else {
+      welcomeMessage.innerText = 'Welcome to the Online Quiz Maker';
+      authActions.innerHTML = `
+        <button onclick="location.href='login.html'" class="button">Login</button>
+        <button onclick="location.href='register.html'" class="button">Register</button>
+      `;
+    }
+
+    function logout() {
+        localStorage.removeItem('currentUser');
+        location.href = 'index.html';
+    }
+</script>
+</body>
+</html>
